@@ -22,3 +22,18 @@ def register():
         }), 201
     except ValueError as e:
         abort(400, description=str(e))
+
+
+@auth_blueprint.route("/auth/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    mail = data.get("mail")
+    password = data.get("password")
+
+    if not mail or not password:
+        abort(400, description="Missing required fields")
+    try:
+        token = AuthService.login(mail, password)
+        return jsonify({"token": token}), 200
+    except ValueError as e:
+        abort(401, description=str(e))
