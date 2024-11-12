@@ -37,3 +37,17 @@ def login():
         return jsonify({"token": token}), 200
     except ValueError as e:
         abort(401, description=str(e))
+
+
+@auth_blueprint.route("/auth/verify-token", methods=["POST"])
+def verify_token():
+    data = request.get_json()
+    token = data.get("token")
+
+    if not token:
+        abort(400, description="Token is required")
+    try:
+        user_id = AuthService.verify_jwt_token(token)
+        return jsonify({"user_id": user_id}), 200
+    except ValueError as e:
+        abort(401, description=str(e))
