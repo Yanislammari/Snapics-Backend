@@ -50,3 +50,11 @@ def update_user(id):
         "mail": updated_user.mail,
         "password": updated_user.password
     })
+
+
+@user_blueprint.route("/users/<string:id>", methods=["DELETE"])
+def delete_user(id):
+    if not UserService.get_user_by_id(id):
+        abort(404, description="User not found.")
+    UserService.delete_user_by_id(id)
+    return {"message": "User deleted successfully"}, 200
